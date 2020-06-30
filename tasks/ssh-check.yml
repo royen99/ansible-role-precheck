@@ -2,10 +2,10 @@
 # Block for testing a regular login (no become, most basic command, and see if {{ remote_tmp }} is writable)
 - block:
   - name: Simple SSH login test as {{ ansible_user }}.
-    become: no
+    become: false
     raw: touch {{ precheck_remote_tmp }}/precheck_logintest_{{ ansible_user }}
-    changed_when: no
-    failed_when: no
+    changed_when: false
+    failed_when: false
     register: id
 
   - name: Include error handling in case of ssh login issue
@@ -16,10 +16,10 @@
 # Block for testing a regular login with becoming root, most basic command, and see if {{ remote_tmp }} is writable for root
 - block:
   - name: Simple SSH login test as root.
-    become: yes
+    become: true
     raw: touch {{ precheck_remote_tmp }}/precheck_logintest_become
-    changed_when: no
-    failed_when: no
+    changed_when: false
+    failed_when: false
     register: id
 
   - name: Include error handling in case of ssh login issue
@@ -28,9 +28,9 @@
   tags: ssh
 
 - name: Clean up created files for login test
-  changed_when: no
-  failed_when: no
-  become: yes
+  changed_when: false
+  failed_when: false
+  become: true
   file:
     path: "{{ item }}"
     state: absent

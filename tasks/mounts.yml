@@ -10,9 +10,9 @@
 
 - name: Warning for df
   set_fact:
-     my_bads: '{{ my_bads + [ "There is an *active* mount that does not work." ] }}'
+     my_bads: '{{ my_bads + [ "There is an mount that does not work." ] }}'
   when:
-    - df_res.rc != 0
+     - df_res.rc != 0
   tags: always
 
 - name: verify mount -a works
@@ -24,12 +24,12 @@
   tags: always
 
 - block:
-  - name: Warning for mount
-    set_fact:
-       my_bads: '{{ my_bads + [ "There is a *configured* mount that does not work." ] }}'
+   - name: Warning for mount
+     set_fact:
+       my_bads: '{{ my_bads + [ "A configured mount that does not work." ] }}'
 
-  - name: Include mount error
-    set_fact:
+   - name: Include mount error
+     set_fact:
        my_bads: "{{ my_bads + [ ' - Details: ' + mount_a.stderr ] }}"
 
   when:
@@ -43,12 +43,12 @@
 - block:
   - name: Include the duplicate volume warning
     set_fact:
-      my_bads: "{{ my_bads + [ 'There are duplicate entries in your /etc/fstab file.' ] }}"
+       my_bads: "{{ my_bads + [ 'There are duplicate entries in your /etc/fstab file.' ] }}"
   - name: Include the details
     set_fact:
-      my_bads: "{{ my_bads + [ ' - Details: ' + dup_fs.stdout ] }}"
+       my_bads: "{{ my_bads + [ ' - Details: ' + dup_fs.stdout ] }}"
   when:
-    - dup_fs.stdout
-    - dup_fs.stdout | length > 0
-    - "'proc' not in dup_fs.stdout"
-    - "'tmpfs' not in dup_fs.stdout"
+     - dup_fs.stdout
+     - dup_fs.stdout | length > 0
+     - "'proc' not in dup_fs.stdout"
+     - "'tmpfs' not in dup_fs.stdout"

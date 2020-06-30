@@ -11,7 +11,7 @@
   tags: always
 
 - name: Collecting minimal system information
-  become: yes
+  become: true
   setup:
     gather_subset: min
   tags: always
@@ -23,24 +23,24 @@
 - name: Check certain filesystems to make sure they have enough space
   include: filesystem_check.yml
   when:
-    - precheck_filesystems is defined 
+    - precheck_filesystems is defined
     - precheck_filesystems | length > 0
   tags: filesystems
 
 - block:
-  - name: Collect output and display issues if anything is found
-    tags: always
-    vars:
-      msg: 
-        - "{{ precheck_message | from_yaml }}"
-        - "{{ my_bads }}"
-    debug:
-      msg: "{{ msg }}"
+    - name: Collect output and display issues if anything is found
+      tags: always
+      vars:
+        msg:
+          - "{{ precheck_message | from_yaml }}"
+          - "{{ my_bads }}"
+      debug:
+        msg: "{{ msg }}"
 
-  - name: Fail here
-    tags: always
-    fail:
-      msg:
-        - "{{ precheck_fail_message | from_yaml }}"
+    - name: Fail here
+      tags: always
+      fail:
+        msg:
+          - "{{ precheck_fail_message | from_yaml }}"
 
   when: my_bads | length > 0

@@ -1,3 +1,4 @@
+---
 - name: check {{ fs.mount }}
   set_fact:
     my_bads: "{{ my_bads + [ fs.mount + ' needs ' + precheck_filesystems[ansible_distribution_major_version][fs.mount]|string + ' MB free space' ] }}"
