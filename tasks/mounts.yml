@@ -26,7 +26,7 @@
 - block:
     - name: Warning for mount
       set_fact:
-       my_bads: '{{ my_bads + [ "A configured mount that does not work." ] }}'
+        my_bads: '{{ my_bads + [ "A configured mount that does not work." ] }}'
 
     - name: Include mount error
       set_fact:
