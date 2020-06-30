@@ -24,13 +24,13 @@
   tags: always
 
 - block:
-  - name: Warning for mount
-    set_fact:
-      my_bads: '{{ my_bads + [ "A configured mount that does not work." ] }}'
+     - name: Warning for mount
+       set_fact:
+         my_bads: '{{ my_bads + [ "A configured mount that does not work." ] }}'
 
-  - name: Include mount error
-    set_fact:
-      my_bads: "{{ my_bads + [ ' - Details: ' + mount_a.stderr ] }}"
+     - name: Include mount error
+       set_fact:
+         my_bads: "{{ my_bads + [ ' - Details: ' + mount_a.stderr ] }}"
 
   when:
      - mount_a.rc != 0
@@ -41,12 +41,12 @@
   register: dup_fs
 
 - block:
-  - name: Include the duplicate volume warning
-    set_fact:
-      my_bads: "{{ my_bads + [ 'There are duplicate entries in your /etc/fstab file.' ] }}"
-  - name: Include the details
-    set_fact:
-       my_bads: "{{ my_bads + [ ' - Details: ' + dup_fs.stdout ] }}"
+     - name: Include the duplicate volume warning
+       set_fact:
+         my_bads: "{{ my_bads + [ 'There are duplicate entries in your /etc/fstab file.' ] }}"
+     - name: Include the details
+       set_fact:
+          my_bads: "{{ my_bads + [ ' - Details: ' + dup_fs.stdout ] }}"
   when:
      - dup_fs.stdout
      - dup_fs.stdout | length > 0
