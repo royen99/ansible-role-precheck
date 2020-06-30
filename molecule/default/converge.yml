@@ -5,19 +5,9 @@
   become: true
 
   pre_tasks:
-    - name: get user id
-      become: false
-      shell: |
-        set -o pipefail
-        id
-      register: output
-      tags:
-        - skip_ansible_lint
-
-
-    - name: show user id
-      debug:
-        msg: "{{ output.stdout }}"
+    - name: Set dummy user for molecule
+      set_fact:
+        ansible_user: root
 
   roles:
     - role: royen99.precheck
