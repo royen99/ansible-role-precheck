@@ -36,7 +36,9 @@
     - mount_a.rc != 0
 
 - name: Check for duplicate volumes in /etc/fstab
-  shell: grep -oE '^[^#]\S+' /etc/fstab | sort | uniq -d
+  shell: |
+    set -o pipefail
+    grep -oE '^[^#]\S+' /etc/fstab | sort | uniq -d
   changed_when: false
   register: dup_fs
 
