@@ -41,6 +41,8 @@
     grep -oE '^[^#]\S+' /etc/fstab | sort | uniq -d
   changed_when: false
   register: dup_fs
+  tags:
+    - molecule-notest
 
 - block:
     - name: Include the duplicate volume warning
