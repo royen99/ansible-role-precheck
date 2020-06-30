@@ -6,8 +6,14 @@
 
   pre_tasks:
     - name: get user id
-      command: id
+      become: no
+      shell: |
+        set -o pipefail
+        id
       register: output
+      tags:
+      - skip_ansible_lint
+
 
     - name: show user id
       debug:
