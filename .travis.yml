@@ -1,0 +1,21 @@
+---
+language: python
+services: docker
+
+env:
+  global:
+    - ROLE_NAME: ntp
+  matrix:
+    - MOLECULE_DISTRO: centos8
+    - MOLECULE_DISTRO: centos7
+    - MOLECULE_DISTRO: centos6
+
+before_script:
+  # Use actual Ansible Galaxy role name for the project directory.
+  - cd ../
+  - mv ansible-role-$ROLE_NAME royen99.$ROLE_NAME
+  - cd royen99.$ROLE_NAME
+
+script:
+  # Run tests.
+  - molecule test
