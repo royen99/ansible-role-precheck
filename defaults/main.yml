@@ -2,7 +2,7 @@
 # defaults file for precheck
 
 # The remote_tmp is a default ansible variable usually set to $HOME/.ansible, but can be overwritten
-# in a ansible.cfg.  
+# in a ansible.cfg.
 precheck_remote_tmp: /tmp
 
 # default file-systems space thresholds
