@@ -1,0 +1,36 @@
+---
+# defaults file for precheck
+
+# The remote_tmp is a default ansible variable usually set to $HOME/.ansible, but can be overwritten
+# in a ansible.cfg.  
+precheck_remote_tmp: /tmp
+
+# default file-systems space thresholds
+precheck_filesystems:
+  "6":
+    "/": 200
+    "/usr": 400
+    "/tmp": 300
+    "/var": 300
+    "/var/log": 100
+  "7":
+    "/": 800
+    "/tmp": 500
+    "/var": 400
+    "/var/log": 200
+  "8":
+    "/": 800
+    "/tmp": 500
+    "/var": 400
+    "/var/log": 200
+
+# A default message that gets displayed when issues are detected.
+precheck_message: |
+  - "The preflight checks have encountered issues that could operational issues."
+  - "Do please investigate the issues named below."
+  - "It is also strongly advised to NOT reboot your system manually before correcting."
+  - "===================================================================================="
+
+# A default message on the actual fail task
+precheck_fail_message: |
+  - "*** IMPORTANT ***, Read the failure message above take action: "

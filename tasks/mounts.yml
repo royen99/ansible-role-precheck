@@ -1,0 +1,54 @@
+---
+
+- name: Verify df works
+  become: yes
+  command: timeout 15 df
+  register: df_res
+  failed_when: no
+  changed_when: no
+  tags: always
+
+- name: Warning for df
+  set_fact:
+     my_bads: '{{ my_bads + [ "There is an *active* mount that does not work. Check your system for issues (often this refers to a network-share)." ] }}'
+  when:
+    - df_res.rc != 0
+  tags: always
+
+- name: verify mount -a works
+  become: yes
+  command: timeout 15 mount -a
+  register: mount_a
+  failed_when: no
+  changed_when: no
+  tags: always
+
+- block:
+  - name: Warning for mount
+    set_fact:
+       my_bads: '{{ my_bads + [ "There is a *configured* mount that does not work. Check your /etc/fstab for issues (often this refers to a network-share)." ] }}'
+
+  - name: Include mount error
+    set_fact:
+       my_bads: "{{ my_bads + [ ' - Details: ' + mount_a.stderr ] }}"
+
+  when:
+    - mount_a.rc != 0
+
+- name: Check for duplicate volumes in /etc/fstab
+  shell: grep -oE '^[^#]\S+' /etc/fstab | sort | uniq -d
+  changed_when: no
+  register: dup_fs
+
+- block:
+  - name: Include the duplicate volume warning
+    set_fact:
+      my_bads: "{{ my_bads + [ 'There are duplicate entries in your /etc/fstab file. Edit/fix the duplicate entry mentioned below:' ] }}"
+  - name: Include the details
+    set_fact:
+      my_bads: "{{ my_bads + [ ' - Details: ' + dup_fs.stdout ] }}"
+  when:
+    - dup_fs.stdout
+    - dup_fs.stdout | length > 0
+    - "'proc' not in dup_fs.stdout"
+    - "'tmpfs' not in dup_fs.stdout"

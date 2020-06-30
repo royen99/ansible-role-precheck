@@ -1,0 +1,17 @@
+---
+
+- name: Gathering mount variables
+  setup:
+    filter: 'ansible_mounts'
+
+- name: check size available and logical volume
+  include_tasks: filesystem_loop.yml
+  loop_control:
+    loop_var: fs
+  loop: "{{ ansible_mounts }}"
+  when: ansible_mounts is defined
+
+- name: Warning for ansible_mounts
+  set_fact:
+      my_bads: '{{ my_bads + [ "We can not gather the ansible_mounts info. You are likely to have issue with *network-based* filesystems." ] }}'
+  when: ansible_mounts is not defined

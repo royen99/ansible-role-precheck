@@ -1,0 +1,90 @@
+---
+- name: Set default fail in case of an unknown issue.
+  set_fact:
+    issue: |
+      "We can not login as {{ ansible_user }} and we are unable to determine why.  Debug output is below"
+      "{{ id | to_nice_yaml }}"
+  tags: ssh
+
+- name: We can not sudo....
+  set_fact:
+    issue: |
+      "Our {{ ansible_user }} user does not have sudo permissions. Do check the permissions."
+  when: ( "'This incident will be reported' in id.stdout" ) or ( "'a password is required' in id.stdout" )
+  tags: ssh
+
+- name: We can not touch the testfile due to permissions issues
+  set_fact:
+    issue: |
+      "We are unable to create a testfile in the remote_tmp directory. Check permissions of {{ ansible_user }}"
+      "or possibly the permissions set on the remote_tmp (usually /tmp)."
+  when:
+    - id.stdout is defined
+    - "'Permission denied' in id.stdout"
+  tags: ssh
+
+- name: Issue with writing to {{ remote_tmp }}
+  set_fact:
+    issue: |
+      "We are unable to write to {{ ansible_remote_tmp }}, could be for various reasons like a full disk or a read-only file-system.""
+      "Full error message below: "
+      "{{ id.module_stderr }}"
+  when:
+    - id.module_stderr is defined
+    - "'you may have been able to authenticate and did not have permissions on the target directory' in id.module_stderr"
+  tags: ssh
+
+- name: Unable to login
+  set_fact:
+    issue: |
+      "The user account of {{ ansible_user }} has some issue, needs manual intervention."
+      "We got a message saying Too many authentication failures, user could be locally locked or expired."
+  when:
+    - id.module_stderr is defined
+    - "'Too many authentication failures' in id.module_stderr"
+  tags: ssh
+
+- name: Password is expired
+  set_fact:
+    issue: "The password of the {{ ansible_user }} user has expired, needs manual intervention."
+  when:
+    - id.module_stderr is defined
+    - "'Your password has expired' in id.module_stderr"
+
+- name: Our {{ ansible_user }} can not use sudo (non-boks)
+  set_fact:
+    issue: |
+      "We are unable to use sudo to become root. Investigate permissions of {{ ansible_user }}."
+  when:
+    - id.module_stdout is defined
+    - "'This incident will be reported.' in id.module_stdout"
+  tags: ssh
+
+- name: We have no root user
+  set_fact:
+    issue: "We seem to be unable to become a priviliged user, the root user has serious issues."
+  when:
+    - id.module_stderr is defined
+    - "'sudo: unknown user: root' in id.module_stderr"
+  tags: ssh
+
+- name: Read only remote_tmp
+  set_fact:
+    issue: "Our remote_tmp path is read-only"
+  when:
+    - id.stdout is defined
+    - "'Read-only file system' in id.stdout"
+  tags: ssh
+
+- name: Full disk (on remote_tmp)
+  set_fact:
+    issue: "Our remote_tmp is full,  please clean {{ remote_tmp }} filesystem."
+  when:
+    - id.stdout is defined
+    - "'No space left on device' in id.stdout"
+  tags: ssh
+
+- name: Fail with reason
+  fail:
+    msg: "{{ issue }}"
+  tags: ssh
