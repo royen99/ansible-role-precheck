@@ -17,7 +17,7 @@
 
     - name: show user id
       debug:
-        msg: "{{ output.results }}"
+        msg: "{{ output.stdout }}"
 
   roles:
     - role: royen99.precheck
