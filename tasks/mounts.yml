@@ -52,7 +52,9 @@
       set_fact:
         my_bads: "{{ my_bads + [ ' - Details: ' + dup_fs.stdout ] }}"
   when:
-    - dup_fs
+    - dup_fs.stdout
     - dup_fs.stdout | length > 0
     - "'proc' not in dup_fs.stdout"
     - "'tmpfs' not in dup_fs.stdout"
+  tags:
+    - molecule-notest
