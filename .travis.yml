@@ -10,6 +10,10 @@ env:
     - MOLECULE_DISTRO: centos7
     - MOLECULE_DISTRO: centos6
 
+install:
+  # Install test dependencies.
+  - pip install molecule yamllint ansible-lint docker
+
 before_script:
   # Use actual Ansible Galaxy role name for the project directory.
   - cd ../
