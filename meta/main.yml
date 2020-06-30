@@ -2,7 +2,7 @@
 dependencies: []
 
 galaxy_info:
-  role_name: precheck
+  role_name: ansible-role-precheck
   author: royen99
   description: Generic EL precheck role
   license: GPLv3
