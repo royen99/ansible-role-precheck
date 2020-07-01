@@ -4,7 +4,7 @@ dependencies: []
 galaxy_info:
   role_name: ansible-role-precheck
   author: royen99
-  description: Generic EL precheck role
+  description: Generic EL/CentOS precheck role
   license: GPLv3
   min_ansible_version: 2.4
   platforms:
@@ -14,3 +14,6 @@ galaxy_info:
   galaxy_tags:
     - system
     - check
+    - filesystems
+    - redhat
+    - centos
